@@ -1,87 +1,90 @@
-<definitions xmlns:wssutil="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
-  xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
-  xmlns:wsp="http://www.w3.org/ns/ws-policy"
-  xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy"
-  xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
-  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-  xmlns:tns="http://oracle.e1.bssv.JP5503B1/"
-  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://oracle.e1.bssv.JP5503B1/" name="BillingManagerService">
-  <wsp:UsingPolicy wssutil:Required="true"/>
-  <wsp1_2:Policy wssutil:Id="bssvpolicy">
-    <ns1:TransportBinding xmlns:ns1="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
-      <wsp1_2:Policy>
-        <ns1:TransportToken>
-          <wsp1_2:Policy>
-            <ns1:HttpsToken/>
-          </wsp1_2:Policy>
-        </ns1:TransportToken>
-        <ns1:AlgorithmSuite>
-          <wsp1_2:Policy>
-            <ns1:Basic256/>
-          </wsp1_2:Policy>
-        </ns1:AlgorithmSuite>
-        <ns1:Layout>
-          <wsp1_2:Policy>
-            <ns1:Lax/>
-          </wsp1_2:Policy>
-        </ns1:Layout>
-      </wsp1_2:Policy>
-    </ns1:TransportBinding>
-    <ns2:SupportingTokens xmlns:ns2="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
-      <wsp1_2:Policy>
-        <ns2:UsernameToken ns2:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
-          <wsp1_2:Policy>
-            <ns2:WssUsernameToken10/>
-          </wsp1_2:Policy>
-        </ns2:UsernameToken>
-      </wsp1_2:Policy>
-    </ns2:SupportingTokens>
-  </wsp1_2:Policy>
-  <types>
-    <xsd:schema>
-      <xsd:import namespace="http://oracle.e1.bssv.JP5503B1/" schemaLocation="https://jde.gobaum.com.br:9066/PY910/BillingManager?xsd=1"/>
-    </xsd:schema>
-  </types>
-  <message name="getBilling">
-    <part name="getBilling" element="tns:getBilling"/>
-  </message>
-  <message name="getBillingResponse">
-    <part name="getBillingResponse" element="tns:getBillingResponse"/>
-  </message>
-  <message name="BusinessServiceException">
-    <part name="fault" element="tns:BusinessServiceException"/>
-  </message>
-  <message name="XAVRequestMessageHeader">
-	    <part name="Security" element="tns:Security"/>
-	</message>
-  <portType name="BillingManager">
-    <operation name="getBilling">
-      <input wsam:Action="http://oracle.e1.bssv.JP5503B1/BillingManager/getBillingRequest" message="tns:getBilling"/>
-      <output wsam:Action="http://oracle.e1.bssv.JP5503B1/BillingManager/getBillingResponse" message="tns:getBillingResponse"/>
-      <fault message="tns:BusinessServiceException" name="BusinessServiceException" wsam:Action="http://oracle.e1.bssv.JP5503B1/BillingManager/getBilling/Fault/BusinessServiceException"/>
-    </operation>
-  </portType>
-  <binding name="BillingManagerPortBinding" type="tns:BillingManager">
-    <wsp:PolicyReference URI="#bssvpolicy"/>
-    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-    <operation name="getBilling">
-      <soap:operation soapAction=""/>
-      <input>
-        <soap:body use="literal"/>
-        <soap:header message="tns:XAVRequestMessageHeader" part="Security" use="literal"/>
-      </input>
-      <output>
-        <soap:body use="literal"/>
-      </output>
-      <fault name="BusinessServiceException">
-        <soap:fault name="BusinessServiceException" use="literal"/>
-      </fault>
-    </operation>
-  </binding>
-  <service name="BillingManagerService">
-    <port name="BillingManagerPort" binding="tns:BillingManagerPortBinding">
-      <soap:address location="https://jde.gobaum.com.br:9066/PY910/BillingManager"/>
-    </port>
-  </service>
-</definitions>
+<!--  Published by JAX-WS RI (http://jax-ws.java.net). RI's version is JAX-WS RI 2.2.10-b140319.1121 svn-revision#7b34660d6bc70e587e8ec81a17e4d76af68816a6.  -->
+<xsd:schema xmlns:ns0="http://oracle.e1.bssv.JP5503B1/"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://oracle.e1.bssv.JP5503B1/">
+  <xsd:complexType name="Security">
+    <xsd:sequence>
+      <xsd:element name="UsernameToken">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Username" type="xsd:string"/>
+            <xsd:element name="Password" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="outputVO">
+    <xsd:complexContent>
+      <xsd:extension base="ns0:messageValueObject">
+        <xsd:sequence>
+          <xsd:element name="erroCod" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="erroDesc" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="itemResponse" type="ns0:itemResponse" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="e1Message">
+    <xsd:sequence>
+      <xsd:element name="message" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="messagePrefix" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="valueObject"/>
+  <xsd:complexType name="e1MessageList">
+    <xsd:sequence>
+      <xsd:element name="e1Messages" type="ns0:e1Message" minOccurs="0" maxOccurs="unbounded" nillable="true"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="itemResponse">
+    <xsd:sequence>
+      <xsd:element name="ciaDocumento" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="cnpj" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="dataFatura" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="dataFechamento" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="diasPosVencimento" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="expirationDate" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="finalExpirationDate" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="idOrderJDE" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="initialExpirationDate" type="xsd:dateTime" minOccurs="0"/>
+      <xsd:element name="itemPagamento" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="nroPedidoSalesForce" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="numeroDocumento" type="xsd:int" minOccurs="0"/>
+      <xsd:element name="orderTotal" type="xsd:decimal" minOccurs="0"/>
+      <xsd:element name="referencia" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="statusPagamento" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="tipoDocumento" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="valorAberto" type="xsd:decimal" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="BusinessServiceException">
+    <xsd:sequence>
+      <xsd:element name="message" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="requestID" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="inputVO">
+    <xsd:complexContent>
+      <xsd:extension base="ns0:valueObject">
+        <xsd:sequence>
+          <xsd:element name="cnpj" type="xsd:string" minOccurs="0"/>
+          <xsd:element name="finalExpirationDate" type="xsd:dateTime" minOccurs="0"/>
+          <xsd:element name="initialExpirationDate" type="xsd:dateTime" minOccurs="0"/>
+          <xsd:element name="statusPagamento" type="xsd:string" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="messageValueObject">
+    <xsd:complexContent>
+      <xsd:extension base="ns0:valueObject">
+        <xsd:sequence>
+          <xsd:element name="e1MessageList" type="ns0:e1MessageList" minOccurs="0"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="getBilling" type="ns0:inputVO" nillable="true"/>
+  <xsd:element name="getBillingResponse" type="ns0:outputVO" nillable="true"/>
+  <xsd:element name="BusinessServiceException" type="ns0:BusinessServiceException"/>
+</xsd:schema>
